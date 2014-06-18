@@ -36,5 +36,8 @@ setup(
     packages=[
         'webpath', 'webpath.test',
     ],
+    scripts=[
+        'bin/webpath',
+    ],
     install_requires=getRequirements(),
 )

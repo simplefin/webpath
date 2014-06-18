@@ -35,7 +35,7 @@ For instance:
 
 ```yaml
 - action: loop
-  iterable: ['jim', 'john', 'james'],
+  iterable: ['jim', 'john', 'james']
   actions:
     - action: dosomething
       thing: $item
