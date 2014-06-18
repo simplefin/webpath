@@ -165,6 +165,19 @@ class basicRunnerTest(TestCase):
         self.assertEqual(context.variables['THE KEY'], 'A robot THE KEY')
 
 
+    @defer.inlineCallbacks
+    def test_dump(self):
+        """
+        You can dump a subset of the available data.
+        """
+        runner = basicRunner()
+        context = Context()
+        result = yield runner.runActions([
+            {'action': 'set', 'key': 'foo', 'value': 'foo value'},
+            {'action': 'set', 'key': 'bar', 'value': 'bar value'},
+            {'action': 'dump', 'keys': ['bar']},
+        ], context)
+        self.assertEqual(result, {'bar': 'bar value'})
 
 
 class ContextTest(TestCase):

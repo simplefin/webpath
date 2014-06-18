@@ -73,4 +73,22 @@ this if the system wants to.  The result is stored in a variable.
   prompt: "What is your user id?"
 ```
 
-## Other actions ##
+
+### `dump` ###
+
+Dump some variables.  This will set the `$last_result` to a dict of the dumped
+variables.
+
+- `keys`: List of keys to dump.
+
+```yaml
+- action: set
+  key: soccer
+  value: "Is awesome"
+- action: dump
+  keys:
+    - soccer
+```
+
+
+## Web actions ##

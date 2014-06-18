@@ -59,7 +59,7 @@ def _loop(params, context):
     defer.returnValue(result)
 
 
-def set(params, context):
+def _set(params, context):
     """
     Save the last result as a variable.
     """
@@ -78,13 +78,26 @@ def _ask(params, context):
     defer.returnValue(value)
 
 
+def _dump(params, context):
+    """
+    Dump the current variables (or a subset of them).
+    """
+    subset_keys = params['keys']
+    result = {}
+    for key in subset_keys:
+        result[key] = context.variables[key]
+    return result
+
+
+
 
 def basicRunner(handlers=None):
     handlers = handlers or {}
     handlers.update({
         'loop': _loop,
-        'set': set,
+        'set': _set,
         'ask': _ask,
+        'dump': _dump,
     })
     return Runner(handlers)
 
