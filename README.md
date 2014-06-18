@@ -3,6 +3,44 @@ Copyright (c) The SimpleFIN Team
 See LICENSE for details.
 -->
 
+# An example #
+
+Install this (with `python setup.py install` or else `pip install 'git+git://github.com/simplefin/webpath.git@master#egg=webpath'`)
+
+Then run this
+
+```
+webpath run
+```
+
+And paste it this input (followed by `Ctrl-D`):
+
+```
+- action: set
+  key: foo
+  value:
+    - item 1
+    - item 2
+    - 3
+    - some: stuff
+      other: stuff
+- action: dump
+  keys: 
+    - foo
+```
+
+To see this output:
+
+```
+foo:
+- item 1
+- item 2
+- 3
+- other: stuff
+  some: stuff
+```
+
+
 # Paths #
 
 A path is a list of actions to perform.  As YAML, a path looks like this:
