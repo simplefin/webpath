@@ -1,4 +1,26 @@
-webpath
+Paths
+=====
+
+A path is a list of actions to perform.  As YAML, a path looks like this:
+
+```yaml
+- action: http_get
+  url: https://www.google.com
+- action: user_input
+  question: "What do you want to search for?"
+  answer: search_term
+- action: form_submit
+  form_index: 0
+  params:
+    q: $search_term
+- action:
+```
+
+Actions
 =======
 
-A library that can make a series of web requests from a script.
+| Action | Description |
+|--------|-------------|
+| `http_get` | Make an HTTP GET request |
+
+
