@@ -113,6 +113,23 @@ class RunnerTest(TestCase):
         self.assertEqual(context.results, ['hi', 'gummy bear', 'GUMMY BEAR'])
 
 
+    @defer.inlineCallbacks
+    def test_runActions_namedResults(self):
+        """
+        You can access results by their names.
+        """
+        runner = Runner({
+            'speak': lambda params,context: params['word']
+        })
+        context = Context()
+
+        result = yield runner.runActions([
+            {'action': 'speak', 'word': 'Hi', 'name': 'first command'},
+            {'action': 'speak', 'word': '$_R["first command"]'},
+        ], context)
+        self.assertEqual(result, 'Hi', "Should have access to all results")
+
+
 
 class basicRunnerTest(TestCase):
 

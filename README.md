@@ -31,6 +31,7 @@ of all the HTML forms on the page  (After pasting, press `Ctrl-D`):
 
 ```yaml
 - action: http
+  name: request
   kwargs:
     method: get
     url: https://www.google.com
@@ -74,6 +75,19 @@ To see something like this output:
 These are the available actions.  It's also not terribly difficult to add
 your own actions.
 
+All actions will store their result in `$_` for the next action to use.  Also,
+you can name actions and access their results from `$_R` like this:
+
+```yaml
+- action: set
+  name: set var1
+  key: var1
+  value: foo
+- action: set
+  key: var2
+  value: $_R["set var1"]
+```
+
 ## Control actions ##
 
 ### `loop` ###
@@ -110,6 +124,7 @@ Set a variable.
   key: alsofoo
   value: $_
 ```
+
 
 ### `append` ###
 

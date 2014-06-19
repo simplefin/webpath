@@ -55,7 +55,7 @@ class Runner(object):
         """
         context.runner = self
         d = defer.maybeDeferred(self._handlers[action], params, context)
-        d.addCallback(context.saveResult)
+        d.addCallback(context.saveResult, name=params.get('name'))
         return d
 
 
@@ -169,7 +169,10 @@ class Context(object):
     def __init__(self, user_input_func=None):
         import requests
         self.results = []
-        self.variables = {}
+        self.named_results = {}
+        self.variables = {
+            '_R': self.named_results,
+        }
         self._user_input_func = user_input_func
         self.requests = requests.Session()
 
@@ -179,12 +182,14 @@ class Context(object):
             self.runner, self.variables, self.results)
 
 
-    def saveResult(self, result):
+    def saveResult(self, result, name=None):
         """
         @param result: Save a result.
         """
         self.variables['_'] = result
         self.results.append(result)
+        if name is not None:
+            self.named_results[name] = result
         return result
 
 
