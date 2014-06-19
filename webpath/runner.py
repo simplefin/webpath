@@ -94,7 +94,8 @@ def _ask(params, context):
     """
     Ask the system for some information.
     """
-    value = yield context.getUserInput(params['key'], params['prompt'])
+    kwargs = params.get('kwargs', {})
+    value = yield context.getUserInput(params['key'], params['prompt'], kwargs)
     context.variables[params['key']] = value
     defer.returnValue(value)
 
@@ -193,17 +194,17 @@ class Context(object):
         return result
 
 
-    def getUserInput(self, key, prompt, **kwargs):
+    def getUserInput(self, key, prompt, kwargs):
         """
         Ask a user for input.
 
         @param key: Uniqueish, computer-friendly key for this query.
         @param prompt: Human-friendly text prompt
-        @param **kwargs: Additional arguments.
+        @param kwargs: Additional settings to pass on.
 
         @return: The Deferred user input.
         """
         return defer.maybeDeferred(self._user_input_func,
-                                   key, prompt, **kwargs)
+                                   key, prompt, kwargs)
 
 

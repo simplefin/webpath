@@ -98,8 +98,6 @@ Iterate over a list of things, performing a set of actions on them.  The
 - `iterable`: Thing to iterate over.
 - `actions`: List of actions to do per item in `iterable`
 
-For instance:
-
 ```yaml
 - action: loop
   iterable: ['jim', 'john', 'james']
@@ -147,11 +145,26 @@ this if the system wants to.  The result is stored in a variable.
 
 - `key`: Name of variable to set.
 - `prompt`: Human-readable prompt.
+- `kwargs`: (Optional) dict of additional parameters.
+
+Possible `kwargs` options:
+
+- `private: true` is used to indicate that the data should be acquired securely
+  if possible.
 
 ```yaml
 - action: ask
   key: user_id
   prompt: "What is your user id?"
+- action: ask
+  key: password
+  prompt: "And your password?"
+  kwargs:
+    private: true
+- action: dump
+  keys:
+    - user_id
+    - password
 ```
 
 

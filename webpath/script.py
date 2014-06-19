@@ -7,6 +7,13 @@ from webpath.runner import basicRunner, Context
 from webpath import http
 
 
+def getUserInput(id, prompt, kwargs):
+    nice_prompt = prompt + ' '
+    if kwargs.get('private'):
+        import getpass
+        return getpass.getpass(nice_prompt)
+    return raw_input(nice_prompt)
+
 
 class Serializer(object):
 
@@ -62,7 +69,7 @@ class RunOptions(usage.Options):
 
         actions = load(ifh)
 
-        context = Context()
+        context = Context(getUserInput)
         runner = basicRunner()
         http.installHTTPHandlers(runner)
 

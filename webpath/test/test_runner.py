@@ -201,7 +201,7 @@ class basicRunnerTest(TestCase):
         You can ask the calling system for some information.
         """
         runner = basicRunner()
-        context = Context(lambda key, prompt, **kw: 'A robot %s' % (key,))
+        context = Context(lambda key, prompt, kw: 'A robot %s' % (key,))
         result = yield runner.runSingleAction('ask', {
             'action': 'ask',
             'key': 'THE KEY',
@@ -209,6 +209,24 @@ class basicRunnerTest(TestCase):
         }, context)
         self.assertEqual(result, 'A robot THE KEY')
         self.assertEqual(context.variables['THE KEY'], 'A robot THE KEY')
+
+
+    @defer.inlineCallbacks
+    def test_ask_kwargs(self):
+        """
+        You can send additional data to the prompting service.
+        """
+        runner = basicRunner()
+        context = Context(lambda key, prompt, kw: 'A robot %s' % (kw['foo'],))
+        result = yield runner.runSingleAction('ask', {
+            'action': 'ask',
+            'key': 'THE KEY',
+            'prompt': 'Who are you?',
+            'kwargs': {'foo': 'heyo'},
+        }, context)
+        self.assertEqual(result, 'A robot heyo')
+        self.assertEqual(context.variables['THE KEY'], 'A robot heyo')
+
 
 
     @defer.inlineCallbacks
@@ -241,13 +259,13 @@ class ContextTest(TestCase):
         """
         d = defer.Deferred()
         called = []
-        def getUserInput(key, prompt, **kwargs):
+        def getUserInput(key, prompt, kwargs):
             called.append(key)
             called.append(prompt)
             called.append(kwargs)
             return d
         context = Context(getUserInput)
-        result = context.getUserInput('id', 'What is your id?')
+        result = context.getUserInput('id', 'What is your id?', {})
         self.assertFalse(result.called)
         self.assertEqual(called, ['id', 'What is your id?', {}])
         d.callback('foo')
