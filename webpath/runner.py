@@ -79,6 +79,16 @@ def _set(params, context):
     return value
 
 
+def _append(params, context):
+    """
+    Append a value to a list.
+    """
+    value = params['value']
+    thelist = context.variables.setdefault(params['key'], [])
+    thelist.append(value)
+    return thelist
+
+
 @defer.inlineCallbacks
 def _ask(params, context):
     """
@@ -109,6 +119,7 @@ def basicRunner(handlers=None):
         'set': _set,
         'ask': _ask,
         'dump': _dump,
+        'append': _append,
     })
     return Runner(handlers)
 

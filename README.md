@@ -111,6 +111,19 @@ Set a variable.
   value: $_
 ```
 
+### `append` ###
+
+Append an item to a list (and create the list if it doesn't exist).
+
+- `key`: Name of variable to append to.
+- `value`: Value to append
+
+```yaml
+- action: append
+  key: foo
+  value: something
+```
+
 
 ### `ask` ###
 

@@ -163,6 +163,22 @@ class basicRunnerTest(TestCase):
 
 
     @defer.inlineCallbacks
+    def test_append(self):
+        """
+        You can append an item to a list, creating it in the process.
+        """
+        runner = basicRunner()
+        context = Context()
+
+        result = yield runner.runActions([
+            {'action': 'append', 'key': 'foo', 'value': 'apple'},
+            {'action': 'append', 'key': 'foo', 'value': 'something'},
+        ], context)
+        self.assertEqual(result, ['apple', 'something'])
+        self.assertEqual(context.variables['foo'], ['apple', 'something'])
+
+
+    @defer.inlineCallbacks
     def test_ask(self):
         """
         You can ask the calling system for some information.
