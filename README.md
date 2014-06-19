@@ -199,5 +199,5 @@ Get a list of forms from an HTML document.
 
 ```yaml
 - action: http.getForms
-  html: "<form><input name="something" value="something"></form>"
+  html: '<form><input name="something" value="something"></form>'
 ```
