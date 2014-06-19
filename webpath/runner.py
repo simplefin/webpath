@@ -10,7 +10,9 @@ class Runner(object):
     """
 
     def __init__(self, handlers=None):
-        self._handlers = handlers or {}
+        self._handlers = {}
+        if handlers:
+            self.registerHandlers(handlers)
 
 
     def registerHandler(self, action, handler_fn):
@@ -20,6 +22,15 @@ class Runner(object):
             function should accept two arguments: C{params} and C{context}.
         """
         self._handlers[action] = handler_fn
+
+
+    def registerHandlers(self, handlers):
+        """
+        Register multiple handlers.
+
+        @param handlers: Dict of handler names to handler functions.
+        """
+        self._handlers.update(handlers)
 
 
     @defer.inlineCallbacks
@@ -161,7 +172,7 @@ class Context(object):
         """
         @param result: Save a result.
         """
-        self.variables['last_result'] = result
+        self.variables['_'] = result
         self.results.append(result)
         return result
 

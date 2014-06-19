@@ -5,6 +5,16 @@ from twisted.internet import threads
 from lxml.html import fromstring, tostring
 
 
+def installHTTPHandlers(runner):
+    """
+    Install HTTP functions on a runner.
+    """
+    # XXX not covered by unit tests
+    runner.registerHandlers({
+        'http': request,
+        'http.getForms': getForms,
+    })
+
 
 def request(params, context):
     """
@@ -24,7 +34,7 @@ def getForms(params, context):
     for form in forms:
         ret.append({
             'html': tostring(form),
-            'form': form.attrib,
+            'form': dict(form.attrib),
             'data': dict(form.fields),
         })
     return ret

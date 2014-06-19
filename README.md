@@ -3,41 +3,70 @@ Copyright (c) The SimpleFIN Team
 See LICENSE for details.
 -->
 
+# Installation #
+
+Since `lxml` is a dependency, you'll need `libxml2` and `libxslt` installed.
+Then, if you have the repo checked out, do this:
+
+```
+python setup.py install
+```
+
+Or install with `pip`:
+
+```
+pip install 'git+git://github.com/simplefin/webpath.git@master#egg=webpath'
+```
+
 # An example #
 
-Install this (with `python setup.py install` or else `pip install 'git+git://github.com/simplefin/webpath.git@master#egg=webpath'`)
+Run this
 
-Then run this
-
-```
-webpath run
+```bash
+webpath run --output-format=json
 ```
 
-And paste it this input (followed by `Ctrl-D`):
+And paste this set of steps to GET `https://www.google.com` then dump out a list
+of all the HTML forms on the page  (After pasting, press `Ctrl-D`):
 
-```
+```yaml
+- action: http
+  kwargs:
+    method: get
+    url: https://www.google.com
+- action: http.getForms
+  html: $_.text
 - action: set
-  key: foo
-  value:
-    - item 1
-    - item 2
-    - 3
-    - some: stuff
-      other: stuff
+  key: forms
+  value: $_
 - action: dump
   keys: 
-    - foo
+    - forms
 ```
 
-To see this output:
+To see something like this output:
 
-```
-foo:
-- item 1
-- item 2
-- 3
-- other: stuff
-  some: stuff
+```json
+{
+  "forms": [
+    {
+      "html": "<form action=\"/search\" name=\"f\"><table cellpadding=\"0\" cellspacing=\"0\"><tr valign=\"top\"><td width=\"25%\">&#160;</td><td align=\"center\" nowrap><input name=\"ie\" value=\"ISO-8859-1\" type=\"hidden\"><input value=\"en\" name=\"hl\" type=\"hidden\"><input name=\"source\" type=\"hidden\" value=\"hp\"><div class=\"ds\" style=\"height:32px;margin:4px 0\"><input style=\"color:#000;margin:0;padding:5px 8px 0 6px;vertical-align:top\" autocomplete=\"off\" class=\"lst\" value=\"\" title=\"Google Search\" maxlength=\"2048\" name=\"q\" size=\"57\"></div><br style=\"line-height:0\"><span class=\"ds\"><span class=\"lsbb\"><input class=\"lsb\" value=\"Google Search\" name=\"btnG\" type=\"submit\"></span></span><span class=\"ds\"><span class=\"lsbb\"><input class=\"lsb\" value=\"I'm Feeling Lucky\" name=\"btnI\" onclick=\"if(this.form.q.value)this.checked=1; else top.location='/doodles/'\" type=\"submit\"></span></span></td><td class=\"fl sblc\" align=\"left\" nowrap width=\"25%\"><a href=\"/advanced_search?hl=en&amp;authuser=0\">Advanced search</a><a href=\"/language_tools?hl=en&amp;authuser=0\">Language tools</a></td></tr></table><input id=\"gbv\" name=\"gbv\" type=\"hidden\" value=\"1\"></form>", 
+      "data": {
+        "q": "", 
+        "btnI": "I'm Feeling Lucky", 
+        "btnG": "Google Search", 
+        "gbv": "1", 
+        "source": "hp", 
+        "hl": "en", 
+        "ie": "ISO-8859-1"
+      }, 
+      "form": {
+        "action": "/search", 
+        "name": "f"
+      }
+    }
+  ]
+}
 ```
 
 
@@ -93,7 +122,7 @@ Set a variable.
   value: foo value
 - action: set
   key: alsofoo
-  value: $last_result
+  value: $_
 ```
 
 
@@ -114,7 +143,7 @@ this if the system wants to.  The result is stored in a variable.
 
 ### `dump` ###
 
-Dump some variables.  This will set the `$last_result` to a dict of the dumped
+Dump some variables.  This will set the `$_` to a dict of the dumped
 variables.
 
 - `keys`: List of keys to dump.

@@ -37,6 +37,19 @@ class RunnerTest(TestCase):
 
 
     @defer.inlineCallbacks
+    def test_registerHandlers(self):
+        """
+        You can register more than one handler at a time.
+        """
+        runner = Runner()
+        runner.registerHandlers({
+            'func': lambda *a,**kw: 'func',
+        })
+        result = yield runner.runSingleAction('func', {}, Context())
+        self.assertEqual(result, 'func')
+
+
+    @defer.inlineCallbacks
     def test_runSingleAction(self):
         """
         Running a single action should store the result in the context.
@@ -48,7 +61,7 @@ class RunnerTest(TestCase):
 
         result = yield runner.runSingleAction('open', {}, context)
         self.assertEqual(context.runner, runner, "Should set the runner")
-        self.assertEqual(context.variables['last_result'], 'hello')
+        self.assertEqual(context.variables['_'], 'hello')
         self.assertEqual(context.results, ['hello'])
         self.assertEqual(result, 'hello')
 
@@ -60,8 +73,8 @@ class RunnerTest(TestCase):
         """
         runner = Runner({
             'speak': lambda params,context: 'hi',
-            'emphasize': lambda params,context: context.variables['last_result'] + '!',
-            'yell': lambda params,context: context.variables['last_result'].upper(),
+            'emphasize': lambda params,context: context.variables['_'] + '!',
+            'yell': lambda params,context: context.variables['_'].upper(),
         })
         context = Context()
 
@@ -71,7 +84,7 @@ class RunnerTest(TestCase):
             {'action': 'emphasize'},
         ], context)
         self.assertEqual(result, 'HI!')
-        self.assertEqual(context.variables['last_result'], result)
+        self.assertEqual(context.variables['_'], result)
         self.assertEqual(context.results, ['hi', 'HI', 'HI!'])
 
 
@@ -83,7 +96,7 @@ class RunnerTest(TestCase):
         runner = Runner({
             'speak': lambda params,context: 'hi',
             'gummy': lambda params,context: d,
-            'yell': lambda params,context: defer.succeed(context.variables['last_result'].upper()),
+            'yell': lambda params,context: defer.succeed(context.variables['_'].upper()),
         })
         context = Context()
 
@@ -96,7 +109,7 @@ class RunnerTest(TestCase):
         d.callback('gummy bear')
         result = self.successResultOf(result)
         self.assertEqual(result, 'GUMMY BEAR')
-        self.assertEqual(context.variables['last_result'], result)
+        self.assertEqual(context.variables['_'], result)
         self.assertEqual(context.results, ['hi', 'gummy bear', 'GUMMY BEAR'])
 
 
@@ -141,11 +154,11 @@ class basicRunnerTest(TestCase):
 
         result = yield runner.runActions([
             {'action': 'func'},
-            {'action': 'set', 'key': 'something', 'value': '$last_result'},
+            {'action': 'set', 'key': 'something', 'value': '$_'},
         ], context)
         self.assertEqual(result, 'hello', "save should return the previous "
                          "result")
-        self.assertEqual(context.variables['last_result'], 'hello')
+        self.assertEqual(context.variables['_'], 'hello')
         self.assertEqual(context.variables['something'], 'hello')
 
 

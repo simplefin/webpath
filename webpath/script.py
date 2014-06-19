@@ -4,6 +4,7 @@ from twisted.python import usage
 import sys
 
 from webpath.runner import basicRunner, Context
+from webpath import http
 
 
 
@@ -28,7 +29,7 @@ class Serializer(object):
 
     def dump_json(self, data, fh):
         import json
-        fh.write(json.dumps(data, indent=4))
+        fh.write(json.dumps(data, indent=2))
         fh.flush()
 
 
@@ -63,6 +64,7 @@ class RunOptions(usage.Options):
 
         context = Context()
         runner = basicRunner()
+        http.installHTTPHandlers(runner)
 
         result = yield runner.runActions(actions, context)
 
