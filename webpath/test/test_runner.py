@@ -180,6 +180,7 @@ class basicRunnerTest(TestCase):
         self.assertEqual(result, {'bar': 'bar value'})
 
 
+
 class ContextTest(TestCase):
 
 
@@ -205,6 +206,16 @@ class ContextTest(TestCase):
         self.assertEqual(called, ['id', 'What is your id?', {}])
         d.callback('foo')
         self.assertEqual(self.successResultOf(result), 'foo')
+
+
+    def test_requests(self):
+        """
+        It should use a requests session by default.
+        """
+        import requests
+        c = Context()
+        self.assertTrue(isinstance(c.requests, requests.Session),
+                        "Should have a .requests attr that is a Session")
 
 
 
@@ -251,4 +262,25 @@ class interpolateTest(TestCase):
         result = interpolate(original, variables)
         self.assertEqual(result, {'hey': ['this', 'foo value', 'thing']})
 
+
+    def test_attributes(self):
+        """
+        You can do attribute access.
+        """
+        class Foo:
+            name = 'something'
+        variables = {'foo': Foo()}
+        original = {'foo': '$foo.name'}
+        result = interpolate(original, variables)
+        self.assertEqual(result, {'foo': 'something'})
+
+
+    def test_array(self):
+        """
+        You can do index-based access
+        """
+        variables = {'foo': [1, 'apple', 'cannon']}
+        original = {'foo': '$foo[1]'}
+        result = interpolate(original, variables)
+        self.assertEqual(result, {'foo': 'apple'})
 

@@ -113,7 +113,7 @@ def _interpolateItem(item, variables):
     if type(item) in (str, unicode):
         if item.startswith('$'):
             var_name = item[1:]
-            item = variables[var_name]
+            item = eval(var_name, {"__builtins__":None}, variables)
     elif type(item) in (dict,):
         item = interpolate(item, variables)
     elif type(item) in (tuple, list):
@@ -141,12 +141,15 @@ class Context(object):
     """
 
     runner = None
+    requests = None
 
 
     def __init__(self, user_input_func=None):
+        import requests
         self.results = []
         self.variables = {}
         self._user_input_func = user_input_func
+        self.requests = requests.Session()
 
 
     def __repr__(self):
