@@ -69,24 +69,10 @@ To see something like this output:
 }
 ```
 
-
-# Paths #
-
-A path is a list of actions to perform.  As YAML, a path looks like this:
-
-```yaml
-- action: http_get
-  url: https://www.google.com
-- action: user_input
-  question: "What do you want to search for?"
-  answer: search_term
-- action: form_submit
-  form_index: 0
-  params:
-    q: $search_term
-```
-
 # Actions #
+
+These are the available actions.  It's also not terribly difficult to add
+your own actions.
 
 ## Control actions ##
 
@@ -159,3 +145,31 @@ variables.
 
 
 ## Web actions ##
+
+
+### `http` ###
+
+Make a web request using the [Python `requests` library](http://docs.python-requests.org/)
+This will set `$_` to a `requests` Response object.  So if you want the content
+of the response use `$_.text`.
+
+- `kwargs`: A dictionary that will be passed unchanged to `requests.request`
+
+```yaml
+- action: http
+  kwargs:
+    method: get
+    url: https://www.google.com
+```
+
+
+### `http.getForms` ###
+
+Get a list of forms from an HTML document.
+
+- `html`: HTML string from which to get the forms.
+
+```yaml
+- action: http.getForms
+  html: "<form><input name="something" value="something"></form>"
+```
