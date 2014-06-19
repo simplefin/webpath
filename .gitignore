@@ -52,3 +52,4 @@ coverage.xml
 docs/_build/
 
 _trial_temp
+*.sublime-*
